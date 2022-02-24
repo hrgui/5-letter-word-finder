@@ -83,13 +83,7 @@ function App() {
         <div className="h-[calc(100vh-220px)] overflow-auto bg-gray-50 dark:bg-gray-600 dark:text-white p-2 mt-4 rounded">
           <AutoSizer>
             {({ height, width }) => (
-              <List
-                className="List"
-                height={height}
-                itemCount={_data.length}
-                itemSize={35}
-                width={width}
-              >
+              <List height={height} itemCount={_data.length} itemSize={35} width={width}>
                 {({ index, style }) => {
                   return <div style={style}>{_data[index]}</div>;
                 }}
