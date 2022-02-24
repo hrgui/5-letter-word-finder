@@ -13,16 +13,19 @@ function App() {
     const defaultRegexValue = inputRef.current.value;
     const charactersToExcludeValue = negativeInputRef.current.value;
     const charactersToMustHaveValue = mustHaveInputRef.current?.value?.split("") || [];
-
-    if (defaultRegexValue || charactersToExcludeValue || charactersToMustHaveValue.length) {
-      setFilteredList(
-        data
-          .filter((d) => d.match(new RegExp(defaultRegexValue, "g")))
-          .filter((d) => d.match(new RegExp(`^[^${charactersToExcludeValue}]+$`, "g")))
-          .filter((d) => charactersToMustHaveValue.every((c) => d.includes(c)))
-      );
-    } else {
-      setFilteredList(data);
+    try {
+      if (defaultRegexValue || charactersToExcludeValue || charactersToMustHaveValue.length) {
+        setFilteredList(
+          data
+            .filter((d) => d.match(new RegExp(defaultRegexValue, "g")))
+            .filter((d) => d.match(new RegExp(`^[^${charactersToExcludeValue}]+$`, "g")))
+            .filter((d) => charactersToMustHaveValue.every((c) => d.includes(c)))
+        );
+      } else {
+        setFilteredList(data);
+      }
+    } catch (e) {
+      // RegExp throws an error, so in this case we do nothing
     }
   }
 
@@ -34,6 +37,7 @@ function App() {
             ref={inputRef}
             type="text"
             defaultValue=""
+            data-testid="RegExInput"
             onChange={handleRegexChange}
             className="
                     block
@@ -51,6 +55,7 @@ function App() {
             ref={negativeInputRef}
             type="text"
             defaultValue=""
+            data-testid="NegativeInput"
             onChange={handleRegexChange}
             className="
                     block
@@ -68,6 +73,7 @@ function App() {
             ref={mustHaveInputRef}
             type="text"
             defaultValue=""
+            data-testid="MustHaveInput"
             onChange={handleRegexChange}
             className="
                     block
