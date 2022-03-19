@@ -27,23 +27,12 @@ it("should filter according to RegExInput if it is set", async () => {
   expect(await screen.findByText("abear")).toBeInTheDocument();
 });
 
-it("should filter according to RegExInput and NegativeInput if it is set", async () => {
-  render(<App />);
-  expect(await screen.findByText("aahed")).toBeInTheDocument();
-
-  userEvent.type(screen.getByTestId("RegExInput"), `b\\wo\\we`);
-  expect(await screen.findByText("biome")).toBeInTheDocument();
-  userEvent.type(screen.getByTestId("NegativeInput"), `cranig`);
-  expect(await screen.findByText("bloke")).toBeInTheDocument();
-});
-
 it("should filter according to RegExInput, NegativeInput, MustHaveInput if it is set", async () => {
   render(<App />);
   expect(await screen.findByText("aahed")).toBeInTheDocument();
 
   userEvent.type(screen.getByTestId("RegExInput"), `b\\wo\\we`);
   expect(await screen.findByText("biome")).toBeInTheDocument();
-  userEvent.type(screen.getByTestId("NegativeInput"), `cranig`);
   userEvent.type(screen.getByTestId("MustHaveInput"), `s`);
   expect(await screen.findByText("boose")).toBeInTheDocument();
 });
