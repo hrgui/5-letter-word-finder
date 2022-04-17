@@ -13,7 +13,7 @@ function App() {
     const defaultRegexValue = inputRef.current.value;
     const charactersToMustHaveValue = mustHaveInputRef.current?.value?.split("") || [];
     try {
-      if (defaultRegexValue || charactersToExcludeValue || charactersToMustHaveValue.length) {
+      if (defaultRegexValue || charactersToMustHaveValue.length) {
         setFilteredList(
           data
             .filter((d) => d.match(new RegExp(defaultRegexValue, "g")))
