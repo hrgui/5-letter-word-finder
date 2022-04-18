@@ -5,13 +5,23 @@ import WordList from "./components/WordList";
 import data from "./data.json";
 
 function App() {
-  const inputRef = React.useRef(null);
-  const mustHaveInputRef = React.useRef(null);
   const [_data, setFilteredList] = React.useState(data);
+  const [regexInputValue, setRegexInputValue] = React.useState("");
+  const [mustHaveInputValue, setMustHaveInputValue] = React.useState("");
 
-  function handleRegexChange() {
-    const defaultRegexValue = inputRef.current.value;
-    const charactersToMustHaveValue = mustHaveInputRef.current?.value?.split("") || [];
+  const handleRegexInputValueChange: React.ChangeEventHandler<HTMLInputElement> = function (e) {
+    setRegexInputValue(e.target.value);
+    handleWordlistChange(e.target.value, mustHaveInputValue);
+  };
+
+  const handleMustHaveInputValueChange: React.ChangeEventHandler<HTMLInputElement> = function (e) {
+    setMustHaveInputValue(e.target.value);
+    handleWordlistChange(regexInputValue, e.target.value);
+  };
+
+  function handleWordlistChange(defaultRegexValue, charactersToMustHaveValue) {
+    charactersToMustHaveValue = charactersToMustHaveValue.split("");
+
     try {
       if (defaultRegexValue || charactersToMustHaveValue.length) {
         setFilteredList(
@@ -23,6 +33,7 @@ function App() {
         setFilteredList(data);
       }
     } catch (e) {
+      // console.error(e);
       // RegExp throws an error, so in this case we do nothing
     }
   }
@@ -30,8 +41,8 @@ function App() {
   return (
     <div className="dark:bg-gray-800 w-screen h-screen">
       <div className="pl-8 pr-8 pt-8">
-        <RegExInput ref={inputRef} onChange={handleRegexChange} />
-        <MustHaveInput ref={mustHaveInputRef} onChange={handleRegexChange} />
+        <RegExInput value={regexInputValue} onChange={handleRegexInputValueChange} />
+        <MustHaveInput value={mustHaveInputValue} onChange={handleMustHaveInputValueChange} />
         <WordList data={_data} />
       </div>
     </div>
