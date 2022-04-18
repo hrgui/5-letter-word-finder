@@ -8,7 +8,7 @@ type Props = {
 
 const WordList = ({ data }: Props) => {
   return (
-    <div className="h-[calc(100vh-160px)] overflow-auto bg-gray-50 dark:bg-gray-600 dark:text-white p-2 mt-4 rounded">
+    <div className="h-[calc(100vh-380px)]  sm:h-[calc(100vh-160px)] overflow-auto bg-gray-50 dark:bg-gray-600 dark:text-white p-2 mt-4 rounded">
       <AutoSizer>
         {({ height, width }) => (
           <List height={height} itemCount={data.length} itemSize={35} width={width}>
