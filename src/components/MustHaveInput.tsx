@@ -1,17 +1,18 @@
 import React from "react";
 
 type Props = {
+  value?: string;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
 };
 
 const MustHaveInput = React.forwardRef<HTMLInputElement, Props>(
-  ({ onChange }: Props, mustHaveInputRef) => {
+  ({ onChange, value }: Props, mustHaveInputRef) => {
     return (
       <label className="block">
         <input
           ref={mustHaveInputRef}
           type="text"
-          defaultValue=""
+          value={value}
           data-testid="MustHaveInput"
           onChange={onChange}
           className="
