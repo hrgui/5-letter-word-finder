@@ -39,7 +39,7 @@ const BasicInput = ({ value, onChange }: Props) => {
   }
 
   return (
-    <label className="grid grid-cols-5 mb-4">
+    <label className="sm:grid sm:grid-cols-5 mb-4">
       <BasicLetterInput
         id="basic-letter-input-0"
         value={internalValue[0]}
@@ -69,6 +69,7 @@ const BasicInput = ({ value, onChange }: Props) => {
         onChange={(e) => handleChangeInPosition(3, e.target.value)}
       />
       <BasicLetterInput
+        isLast
         id="basic-letter-input-4"
         value={internalValue[4]}
         lockValue={internalLocks[4]}
