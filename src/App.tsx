@@ -7,11 +7,11 @@ import BasicInput from "./components/BasicInput";
 
 function App() {
   const [_data, setFilteredList] = React.useState(data);
-  const [regexInputValue, setRegexInputValue] = React.useState("");
+  const [basicInputValues, setBasicInputValues] = React.useState(new Array(5).fill(""));
+  const [locksValue, setLocksValue] = React.useState(new Array(5).fill(false));
   const [mustHaveInputValue, setMustHaveInputValue] = React.useState("");
 
   function getRegexValueFromBasicInputValue({ value, locks }) {
-    console.log(value);
     return value
       .map((value, i) => {
         let actualValue;
@@ -29,8 +29,9 @@ function App() {
       .join("");
   }
 
-  const handleRegexInputValueChange: React.ChangeEventHandler<HTMLInputElement> = function (e) {
-    setRegexInputValue((e.target.value as unknown as string[]).join(""));
+  const handleBasicInputValuesChange: React.ChangeEventHandler<HTMLInputElement> = function (e) {
+    setBasicInputValues(e.target.value as unknown as string[]);
+    setLocksValue((e.target as any).locks);
     handleWordlistChange(
       getRegexValueFromBasicInputValue(e.target as HTMLInputElement & { locks: boolean[] }),
       mustHaveInputValue
@@ -39,18 +40,20 @@ function App() {
 
   const handleMustHaveInputValueChange: React.ChangeEventHandler<HTMLInputElement> = function (e) {
     setMustHaveInputValue(e.target.value);
-    handleWordlistChange(regexInputValue, e.target.value);
+    handleWordlistChange(
+      getRegexValueFromBasicInputValue({ value: basicInputValues, locks: locksValue }),
+      e.target.value
+    );
   };
 
-  function handleWordlistChange(defaultRegexValue, charactersToMustHaveValue) {
-    console.log(defaultRegexValue);
+  function handleWordlistChange(basicInputValues, charactersToMustHaveValue) {
     charactersToMustHaveValue = charactersToMustHaveValue.split("");
 
     try {
-      if (defaultRegexValue || charactersToMustHaveValue.length) {
+      if (basicInputValues.length || charactersToMustHaveValue.length) {
         setFilteredList(
           data
-            .filter((d) => d.match(new RegExp(defaultRegexValue, "g")))
+            .filter((d) => d.match(new RegExp(basicInputValues, "g")))
             .filter((d) => charactersToMustHaveValue.every((c) => d.includes(c)))
         );
       } else {
@@ -65,7 +68,7 @@ function App() {
   return (
     <div className="dark:bg-gray-800 w-screen h-screen">
       <div className="pl-8 pr-8 pt-8">
-        <BasicInput value={regexInputValue} onChange={handleRegexInputValueChange} />
+        <BasicInput value={basicInputValues} onChange={handleBasicInputValuesChange} />
         <MustHaveInput value={mustHaveInputValue} onChange={handleMustHaveInputValueChange} />
         <WordList data={_data} />
       </div>
