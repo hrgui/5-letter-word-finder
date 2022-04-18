@@ -19,8 +19,7 @@ const MustHaveInput = React.forwardRef<HTMLInputElement, Props>(
               block
               w-full
               rounded-md
-              bg-gray-100 dark:bg-gray-600 dark:text-white
-              border-transparent
+              bg-yellow-100 dark:bg-yellow-600 dark:text-white dark:placeholder-gray-300
               focus:border-gray-500 focus:bg-white dark:focus:bg-gray-700 focus:ring-0
             "
           placeholder="Insert characters must have"
