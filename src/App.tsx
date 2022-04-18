@@ -3,15 +3,38 @@ import RegExInput from "./components/RegExInput";
 import MustHaveInput from "./components/MustHaveInput";
 import WordList from "./components/WordList";
 import data from "./data.json";
+import BasicInput from "./components/BasicInput";
 
 function App() {
   const [_data, setFilteredList] = React.useState(data);
   const [regexInputValue, setRegexInputValue] = React.useState("");
   const [mustHaveInputValue, setMustHaveInputValue] = React.useState("");
 
+  function getRegexValueFromBasicInputValue({ value, locks }) {
+    console.log(value);
+    return value
+      .map((value, i) => {
+        let actualValue;
+
+        if (value.trim() === "") {
+          actualValue = "\\w"; // nothing
+        } else if (locks[i]) {
+          actualValue = value.trim()[0];
+        } else {
+          actualValue = `[^${value}]`;
+        }
+
+        return actualValue;
+      })
+      .join("");
+  }
+
   const handleRegexInputValueChange: React.ChangeEventHandler<HTMLInputElement> = function (e) {
-    setRegexInputValue(e.target.value);
-    handleWordlistChange(e.target.value, mustHaveInputValue);
+    setRegexInputValue((e.target.value as unknown as string[]).join(""));
+    handleWordlistChange(
+      getRegexValueFromBasicInputValue(e.target as HTMLInputElement & { locks: boolean[] }),
+      mustHaveInputValue
+    );
   };
 
   const handleMustHaveInputValueChange: React.ChangeEventHandler<HTMLInputElement> = function (e) {
@@ -20,6 +43,7 @@ function App() {
   };
 
   function handleWordlistChange(defaultRegexValue, charactersToMustHaveValue) {
+    console.log(defaultRegexValue);
     charactersToMustHaveValue = charactersToMustHaveValue.split("");
 
     try {
@@ -41,7 +65,7 @@ function App() {
   return (
     <div className="dark:bg-gray-800 w-screen h-screen">
       <div className="pl-8 pr-8 pt-8">
-        <RegExInput value={regexInputValue} onChange={handleRegexInputValueChange} />
+        <BasicInput value={regexInputValue} onChange={handleRegexInputValueChange} />
         <MustHaveInput value={mustHaveInputValue} onChange={handleMustHaveInputValueChange} />
         <WordList data={_data} />
       </div>
