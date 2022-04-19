@@ -39,7 +39,7 @@ const BasicInput = ({ value, onChange }: Props) => {
   }
 
   return (
-    <label className="sm:grid sm:grid-cols-5 mb-4">
+    <label className="sm:grid sm:grid-cols-5">
       <BasicLetterInput
         id="basic-letter-input-0"
         value={internalValue[0]}

@@ -67,10 +67,16 @@ function App() {
 
   return (
     <div className="dark:bg-gray-800 w-screen h-screen">
-      <div className="pl-8 pr-8 pt-8">
-        <BasicInput value={basicInputValues} onChange={handleBasicInputValuesChange} />
-        <MustHaveInput value={mustHaveInputValue} onChange={handleMustHaveInputValueChange} />
-        <WordList data={_data} />
+      <div className="flex flex-col h-screen">
+        <div className="p-4">
+          <BasicInput value={basicInputValues} onChange={handleBasicInputValuesChange} />
+        </div>
+        <div className="pl-4 pr-4">
+          <MustHaveInput value={mustHaveInputValue} onChange={handleMustHaveInputValueChange} />
+        </div>
+        <div className="p-4 flex-grow flex-1">
+          <WordList data={_data} />
+        </div>
       </div>
     </div>
   );
