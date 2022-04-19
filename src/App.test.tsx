@@ -95,3 +95,23 @@ it("should fill in the basic input once a word is clicked", async () => {
   expect(fourthBasicInput.value).toEqual("ecd");
   expect(fifthBasicInput.value).toEqual("dho");
 });
+
+it("should fill in basic input when quick add word is clicked", async () => {
+  render(<App />);
+  const quickAddWordInput = screen.queryByTestId("quickAddWordInput");
+  const quickAddWordButton = screen.queryByTestId("quickAddWordButton");
+  await userEvent.type(quickAddWordInput, "crane");
+  await userEvent.click(quickAddWordButton);
+
+  const firstBasicInput = screen.getByTestId("basic-letter-input-0") as HTMLInputElement;
+  const secondBasicInput = screen.getByTestId("basic-letter-input-1") as HTMLInputElement;
+  const thirdBasicInput = screen.getByTestId("basic-letter-input-2") as HTMLInputElement;
+  const fourthBasicInput = screen.getByTestId("basic-letter-input-3") as HTMLInputElement;
+  const fifthBasicInput = screen.getByTestId("basic-letter-input-4") as HTMLInputElement;
+
+  expect(firstBasicInput.value).toEqual("c");
+  expect(secondBasicInput.value).toEqual("r");
+  expect(thirdBasicInput.value).toEqual("a");
+  expect(fourthBasicInput.value).toEqual("n");
+  expect(fifthBasicInput.value).toEqual("e");
+});

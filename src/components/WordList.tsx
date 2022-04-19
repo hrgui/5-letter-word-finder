@@ -7,9 +7,10 @@ type Props = {
   data: string[];
   onWordClick?: (word: string) => void;
   lockedLetters?: (string | null)[];
+  mustHaveLetters?: string[];
 };
 
-const WordList = ({ data, onWordClick, lockedLetters }: Props) => {
+const WordList = ({ data, onWordClick, lockedLetters, mustHaveLetters }: Props) => {
   return (
     <div className="h-full overflow-auto bg-gray-50 dark:bg-gray-600 dark:text-white p-2 rounded">
       <AutoSizer>
@@ -28,8 +29,11 @@ const WordList = ({ data, onWordClick, lockedLetters }: Props) => {
                 >
                   {chars.map((c, i) => (
                     <span
+                      key={`${data[index]}-${c}-${i}`}
                       className={classNames({
                         ["font-bold bg-green-100 dark:bg-green-800"]: lockedLetters[i] === c,
+                        ["font-bold bg-yellow-100 dark:bg-yellow-800"]:
+                          lockedLetters[i] !== c && mustHaveLetters.includes(c),
                       })}
                     >
                       {c}
