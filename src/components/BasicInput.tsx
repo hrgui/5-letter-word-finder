@@ -35,7 +35,13 @@ const BasicInput = ({ value, onChange }: Props) => {
     const newInternalLocks = [...internalLocks];
     newInternalLocks[pos] = newValue;
     setInternalLocks(newInternalLocks);
-    callOnChange(internalValue, newInternalLocks);
+
+    const parts = [...internalValue];
+    const currentWord = parts[pos];
+    parts[pos] = currentWord[currentWord.length - 1]; // choose the last because we're basing it on last word click
+    setInternalValue(parts);
+
+    callOnChange(parts, newInternalLocks);
   }
 
   return (

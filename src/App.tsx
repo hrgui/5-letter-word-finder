@@ -65,6 +65,17 @@ function App() {
     }
   }
 
+  function handleWordClick(word) {
+    const newBasicInputValues = basicInputValues.map((currentLetters, i) =>
+      !locksValue[i] ? `${currentLetters}${word[i]}` : currentLetters
+    );
+    setBasicInputValues(newBasicInputValues);
+    handleWordlistChange(
+      getRegexValueFromBasicInputValue({ value: newBasicInputValues, locks: locksValue }),
+      mustHaveInputValue
+    );
+  }
+
   return (
     <div className="dark:bg-gray-800 w-screen h-screen">
       <div className="flex flex-col h-screen">
@@ -75,7 +86,7 @@ function App() {
           <MustHaveInput value={mustHaveInputValue} onChange={handleMustHaveInputValueChange} />
         </div>
         <div className="p-4 flex-grow flex-1">
-          <WordList data={_data} />
+          <WordList onWordClick={handleWordClick} data={_data} />
         </div>
       </div>
     </div>
