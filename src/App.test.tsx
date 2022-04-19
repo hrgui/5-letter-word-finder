@@ -3,6 +3,10 @@ import { render, waitFor, userEvent, screen } from "./utils/test-utils";
 import App from "./App";
 import { vi, it, expect } from "vitest";
 
+function queryTextButton(name) {
+  return screen.queryByRole("button", { name });
+}
+
 vi.mock("react-virtualized-auto-sizer", () => {
   return {
     default: ({ children }) => {
@@ -12,25 +16,25 @@ vi.mock("react-virtualized-auto-sizer", () => {
 });
 
 it("should render the default state - nothing filtered", async () => {
-  const { getByText } = render(<App />);
+  render(<App />);
 
   await waitFor(() => {
-    return expect(getByText("aahed")).toBeInTheDocument();
+    return expect(queryTextButton("aahed")).toBeInTheDocument();
   });
 });
 
 it("should filter according to BasicInput if it is set (x,x,x,x,r (lock)) => find all 5 letter words that end with r", async () => {
   render(<App />);
-  expect(await screen.findByText("aahed")).toBeInTheDocument();
+  expect(await queryTextButton("aahed")).toBeInTheDocument();
 
   await userEvent.type(screen.getByTestId("basic-letter-input-4"), `r`);
   await userEvent.click(screen.getByTestId("basic-letter-input-4-lock"));
-  expect(await screen.findByText("abear")).toBeInTheDocument();
+  expect(await queryTextButton("abear")).toBeInTheDocument();
 });
 
 it("should filter according to BasicInput and MustHaveInput if it is set to (b (lock),x,o (lock),x,e (lock)), must have s", async () => {
   render(<App />);
-  expect(await screen.findByText("aahed")).toBeInTheDocument();
+  expect(await queryTextButton("aahed")).toBeInTheDocument();
   // screen.debug();
   await userEvent.type(screen.getByTestId("basic-letter-input-0"), `b`);
   await userEvent.click(screen.getByTestId("basic-letter-input-0-lock"));
@@ -38,14 +42,14 @@ it("should filter according to BasicInput and MustHaveInput if it is set to (b (
   await userEvent.click(screen.getByTestId("basic-letter-input-2-lock"));
   await userEvent.type(screen.getByTestId("basic-letter-input-4"), `e`);
   await userEvent.click(screen.getByTestId("basic-letter-input-4-lock"));
-  expect(await screen.findByText("biome")).toBeInTheDocument();
+  expect(await queryTextButton("biome")).toBeInTheDocument();
   await userEvent.type(screen.getByTestId("MustHaveInput"), `s`);
-  expect(await screen.findByText("boose")).toBeInTheDocument();
+  expect(await queryTextButton("boose")).toBeInTheDocument();
 });
 
 it("should fill in the basic input once a word is clicked", async () => {
   render(<App />);
-  const textItem = await screen.findByText("aahed");
+  const textItem = await queryTextButton("aahed");
   expect(textItem).toBeInTheDocument();
 
   await userEvent.click(textItem);
@@ -62,9 +66,9 @@ it("should fill in the basic input once a word is clicked", async () => {
   expect(fourthBasicInput.value).toEqual("e");
   expect(fifthBasicInput.value).toEqual("d");
 
-  expect(await screen.queryByText("aahed")).not.toBeInTheDocument();
+  expect(await queryTextButton("aahed")).not.toBeInTheDocument();
   // beach should exist now in the list
-  const nextTargetTextItem = await screen.queryByText("beach");
+  const nextTargetTextItem = await queryTextButton("beach");
   expect(nextTargetTextItem).toBeInTheDocument();
   // on consecutive word clicks, we should see more being added
 
@@ -80,7 +84,7 @@ it("should fill in the basic input once a word is clicked", async () => {
   expect(thirdBasicInput.value).toEqual("a");
 
   // now when we select this letter, we expect the center to stay `a`
-  const finalTargetTextItem = await screen.queryByText("chado");
+  const finalTargetTextItem = await queryTextButton("chado");
   expect(finalTargetTextItem).toBeInTheDocument();
 
   await userEvent.click(finalTargetTextItem);

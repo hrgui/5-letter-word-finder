@@ -1,5 +1,4 @@
 import React from "react";
-import RegExInput from "./components/RegExInput";
 import MustHaveInput from "./components/MustHaveInput";
 import WordList from "./components/WordList";
 import data from "./data.json";
@@ -86,7 +85,11 @@ function App() {
           <MustHaveInput value={mustHaveInputValue} onChange={handleMustHaveInputValueChange} />
         </div>
         <div className="p-4 flex-grow flex-1">
-          <WordList onWordClick={handleWordClick} data={_data} />
+          <WordList
+            lockedLetters={basicInputValues.map((letter, i) => (locksValue[i] ? letter : null))}
+            onWordClick={handleWordClick}
+            data={_data}
+          />
         </div>
       </div>
     </div>
