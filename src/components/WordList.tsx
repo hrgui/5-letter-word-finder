@@ -12,7 +12,10 @@ type Props = {
 
 const WordList = ({ data, onWordClick, lockedLetters, mustHaveLetters }: Props) => {
   return (
-    <div className="h-full overflow-auto bg-gray-50 dark:bg-gray-600 dark:text-white p-2 rounded">
+    <div
+      data-testid="WordList"
+      className="h-full overflow-auto bg-gray-50 dark:bg-gray-600 dark:text-white p-2 rounded"
+    >
       <AutoSizer>
         {({ height, width }) => (
           <List height={height} itemCount={data.length} itemSize={35} width={width}>

@@ -10,7 +10,7 @@ function queryTextButton(name) {
 vi.mock("react-virtualized-auto-sizer", () => {
   return {
     default: ({ children }) => {
-      return children({ width: 600, height: 600 });
+      return children({ width: 600, height: 1000 });
     },
   };
 });
@@ -47,9 +47,10 @@ it("should filter according to BasicInput and MustHaveInput if it is set to (b (
   expect(await queryTextButton("boose")).toBeInTheDocument();
 });
 
-it("should fill in the basic input once a word is clicked", async () => {
+it("should fill in the basic input once a word is clicked, filtering w/ respect to locks and must have values", async () => {
+  // abbey => must have y => glyph => (lock y, lock p) => crypt
   render(<App />);
-  const textItem = await queryTextButton("aahed");
+  const textItem = await queryTextButton("abbey");
   expect(textItem).toBeInTheDocument();
 
   await userEvent.click(textItem);
@@ -61,39 +62,47 @@ it("should fill in the basic input once a word is clicked", async () => {
   const fifthBasicInput = screen.getByTestId("basic-letter-input-4") as HTMLInputElement;
 
   expect(firstBasicInput.value).toEqual("a");
-  expect(secondBasicInput.value).toEqual("a");
-  expect(thirdBasicInput.value).toEqual("h");
+  expect(secondBasicInput.value).toEqual("b");
+  expect(thirdBasicInput.value).toEqual("b");
   expect(fourthBasicInput.value).toEqual("e");
-  expect(fifthBasicInput.value).toEqual("d");
+  expect(fifthBasicInput.value).toEqual("y");
 
-  expect(await queryTextButton("aahed")).not.toBeInTheDocument();
-  // beach should exist now in the list
-  const nextTargetTextItem = await queryTextButton("beach");
+  expect(await queryTextButton("abbey")).not.toBeInTheDocument();
+
+  // must have a y
+  await userEvent.type(screen.getByTestId("MustHaveInput"), "y");
+
+  // glyph should exist now in the list
+  const nextTargetTextItem = await queryTextButton("glyph");
   expect(nextTargetTextItem).toBeInTheDocument();
   // on consecutive word clicks, we should see more being added
 
   await userEvent.click(nextTargetTextItem);
-  expect(firstBasicInput.value).toEqual("ab");
-  expect(secondBasicInput.value).toEqual("ae");
-  expect(thirdBasicInput.value).toEqual("ha");
-  expect(fourthBasicInput.value).toEqual("ec");
-  expect(fifthBasicInput.value).toEqual("dh");
+  expect(firstBasicInput.value).toEqual("ag");
+  expect(secondBasicInput.value).toEqual("bl");
+  expect(thirdBasicInput.value).toEqual("by");
+  expect(fourthBasicInput.value).toEqual("ep");
+  expect(fifthBasicInput.value).toEqual("yh");
 
   // locking the third letter should reduce down the third letter to just one char
   await userEvent.click(screen.getByTestId("basic-letter-input-2-lock"));
-  expect(thirdBasicInput.value).toEqual("a");
+  await userEvent.click(screen.getByTestId("basic-letter-input-3-lock"));
 
-  // now when we select this letter, we expect the center to stay `a`
-  const finalTargetTextItem = await queryTextButton("chado");
+  // now when we select this letter, we expect the center to stay `y`
+  expect(thirdBasicInput.value).toEqual("y");
+  expect(fourthBasicInput.value).toEqual("p");
+
+  // crypt should now exist
+  const finalTargetTextItem = await queryTextButton("crypt");
   expect(finalTargetTextItem).toBeInTheDocument();
 
   await userEvent.click(finalTargetTextItem);
 
-  expect(firstBasicInput.value).toEqual("abc");
-  expect(secondBasicInput.value).toEqual("aeh");
-  expect(thirdBasicInput.value).toEqual("a");
-  expect(fourthBasicInput.value).toEqual("ecd");
-  expect(fifthBasicInput.value).toEqual("dho");
+  expect(firstBasicInput.value).toEqual("agc");
+  expect(secondBasicInput.value).toEqual("blr");
+  expect(thirdBasicInput.value).toEqual("y");
+  expect(fourthBasicInput.value).toEqual("p");
+  expect(fifthBasicInput.value).toEqual("yht");
 });
 
 it("should fill in basic input when quick add word is clicked", async () => {

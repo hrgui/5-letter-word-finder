@@ -11,29 +11,46 @@ function App() {
   const [locksValue, setLocksValue] = React.useState(new Array(5).fill(false));
   const [mustHaveInputValue, setMustHaveInputValue] = React.useState("");
 
-  function getRegexValueFromBasicInputValue({ value, locks }) {
-    return value
-      .map((value, i) => {
+  function getOtherCharactersToExclude(valueAtPosition, allValues, locks, mustHaveInputValues) {
+    const allOtherExcludeCharacters = allValues
+      .filter((value, i) => !locks[i] && valueAtPosition !== value)
+      .filter((value) => !mustHaveInputValues.includes(value))
+      .join("");
+    return `${allOtherExcludeCharacters}`;
+  }
+
+  function getRegexValueFromBasicInputValue({ value, locks, mustHaveInputValues }) {
+    mustHaveInputValues = mustHaveInputValues.split("");
+    const newRegexValue = value
+      .map((valueAtPosition, i) => {
         let actualValue;
 
-        if (value.trim() === "") {
+        if (valueAtPosition.trim() === "") {
           actualValue = "\\w"; // nothing
         } else if (locks[i]) {
-          actualValue = value.trim()[0];
+          actualValue = valueAtPosition.trim()[0];
         } else {
-          actualValue = `[^${value}]`;
+          actualValue = `[^${valueAtPosition}${getOtherCharactersToExclude(
+            valueAtPosition,
+            value,
+            locks,
+            mustHaveInputValues
+          )}]`;
         }
 
         return actualValue;
       })
       .join("");
+
+    return newRegexValue;
   }
 
   const handleBasicInputValuesChange: React.ChangeEventHandler<HTMLInputElement> = function (e) {
     setBasicInputValues(e.target.value as unknown as string[]);
     setLocksValue((e.target as any).locks);
+    const { value, locks } = e.target as HTMLInputElement & { locks: boolean[] };
     handleWordlistChange(
-      getRegexValueFromBasicInputValue(e.target as HTMLInputElement & { locks: boolean[] }),
+      getRegexValueFromBasicInputValue({ value, locks, mustHaveInputValues: mustHaveInputValue }),
       mustHaveInputValue
     );
   };
@@ -41,7 +58,11 @@ function App() {
   const handleMustHaveInputValueChange: React.ChangeEventHandler<HTMLInputElement> = function (e) {
     setMustHaveInputValue(e.target.value);
     handleWordlistChange(
-      getRegexValueFromBasicInputValue({ value: basicInputValues, locks: locksValue }),
+      getRegexValueFromBasicInputValue({
+        value: basicInputValues,
+        locks: locksValue,
+        mustHaveInputValues: e.target.value,
+      }),
       e.target.value
     );
   };
@@ -71,7 +92,11 @@ function App() {
     );
     setBasicInputValues(newBasicInputValues);
     handleWordlistChange(
-      getRegexValueFromBasicInputValue({ value: newBasicInputValues, locks: locksValue }),
+      getRegexValueFromBasicInputValue({
+        value: newBasicInputValues,
+        locks: locksValue,
+        mustHaveInputValues: mustHaveInputValue,
+      }),
       mustHaveInputValue
     );
   }
