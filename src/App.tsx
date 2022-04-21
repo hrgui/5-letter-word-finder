@@ -112,6 +112,16 @@ function App() {
         <div className="p-4">
           <BasicInput value={basicInputValues} onChange={handleBasicInputValuesChange} />
         </div>
+        <div className="pl-4 pr-4 pb-4 flex items-center justify-center">
+          Current Regex:{" "}
+          <code>
+            {getRegexValueFromBasicInputValue({
+              value: basicInputValues,
+              locks: locksValue,
+              mustHaveInputValues: mustHaveInputValue,
+            })}
+          </code>
+        </div>
         <div className="pl-4 pr-4 pb-4 flex h-12 items-center justify-center">
           <input
             ref={quickAddWordRef}
