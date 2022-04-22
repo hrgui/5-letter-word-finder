@@ -118,7 +118,7 @@ function App() {
         <div className="p-4">
           <BasicInput value={basicInputValues} onChange={handleBasicInputValuesChange} />
         </div>
-        <div className="pl-4 pr-4 pb-4 flex items-center justify-center">
+        <div className="pl-4 pr-4 pb-4 flex items-center justify-center text-black dark:text-white">
           Current Regex:{" "}
           <code>
             {getRegexValueFromBasicInputValue({
