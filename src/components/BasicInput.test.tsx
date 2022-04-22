@@ -24,6 +24,7 @@ describe("case with value", () => {
         [
           {
             "target": {
+              "extraCharactersToExclude": [],
               "locks": [
                 false,
                 false,
@@ -44,6 +45,7 @@ describe("case with value", () => {
         [
           {
             "target": {
+              "extraCharactersToExclude": [],
               "locks": [
                 false,
                 false,
@@ -79,6 +81,7 @@ describe("locking case", () => {
         [
           {
             "target": {
+              "extraCharactersToExclude": [],
               "locks": [
                 false,
                 false,
@@ -99,6 +102,7 @@ describe("locking case", () => {
         [
           {
             "target": {
+              "extraCharactersToExclude": [],
               "locks": [
                 false,
                 false,

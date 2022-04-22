@@ -18,9 +18,9 @@ const BasicInput = ({ value, onChange }: Props) => {
     }
   }, [value]);
 
-  function callOnChange(newInternalValue, newInternalLocks) {
+  function callOnChange(newInternalValue, newInternalLocks, extraCharactersToExclude = []) {
     onChange?.({
-      target: { value: newInternalValue, locks: newInternalLocks },
+      target: { value: newInternalValue, locks: newInternalLocks, extraCharactersToExclude },
     } as unknown as React.ChangeEvent<HTMLInputElement>);
   }
 
@@ -41,7 +41,7 @@ const BasicInput = ({ value, onChange }: Props) => {
     parts[pos] = currentWord[currentWord.length - 1]; // choose the last because we're basing it on last word click
     setInternalValue(parts);
 
-    callOnChange(parts, newInternalLocks);
+    callOnChange(parts, newInternalLocks, currentWord.slice(0, currentWord.length - 1).split(""));
   }
 
   return (

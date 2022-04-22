@@ -11,13 +11,23 @@ function App() {
   const [basicInputValues, setBasicInputValues] = React.useState(new Array(5).fill(""));
   const [locksValue, setLocksValue] = React.useState(new Array(5).fill(false));
   const [mustHaveInputValue, setMustHaveInputValue] = React.useState("");
+  const [extraCharactersToExcludeRaw, setExtraCharactersToExcludeRaw] = React.useState("");
 
-  function getOtherCharactersToExclude(valueAtPosition, allValues, locks, mustHaveInputValues) {
+  function getOtherCharactersToExclude(
+    valueAtPosition,
+    allValues,
+    locks,
+    mustHaveInputValues,
+    extraCharactersToExclude
+  ) {
     //FIXME refactor probably can reduce to only do it once rather than per each call
     const lockedValuesToExclude = allValues.filter((value, i) => locks[i]);
 
     // FIXME refactor flatten most likely can be memoed
-    const allOtherExcludeCharacters = flatten(allValues.map((v) => v.split("")))
+    const allOtherExcludeCharacters = flatten([
+      ...allValues.map((v) => v.split("")),
+      ...extraCharactersToExclude,
+    ])
       .filter((value, i) => valueAtPosition !== value)
       .filter((value) => !lockedValuesToExclude.includes(value))
       .filter((value) => !mustHaveInputValues.includes(value))
@@ -25,7 +35,12 @@ function App() {
     return `${allOtherExcludeCharacters}`;
   }
 
-  function getRegexValueFromBasicInputValue({ value, locks, mustHaveInputValues }) {
+  function getRegexValueFromBasicInputValue({
+    value,
+    locks,
+    mustHaveInputValues,
+    extraCharactersToExclude,
+  }) {
     mustHaveInputValues = mustHaveInputValues.split("");
     const newRegexValue = value
       .map((valueAtPosition, i) => {
@@ -40,7 +55,8 @@ function App() {
             valueAtPosition,
             value,
             locks,
-            mustHaveInputValues
+            mustHaveInputValues,
+            extraCharactersToExclude
           )}]`;
         }
 
@@ -54,9 +70,21 @@ function App() {
   const handleBasicInputValuesChange: React.ChangeEventHandler<HTMLInputElement> = function (e) {
     setBasicInputValues(e.target.value as unknown as string[]);
     setLocksValue((e.target as any).locks);
-    const { value, locks } = e.target as HTMLInputElement & { locks: boolean[] };
+    const { value, locks, extraCharactersToExclude } = e.target as HTMLInputElement & {
+      locks: boolean[];
+      extraCharactersToExclude: string[];
+    };
+    const allExtraCharactersToExcludeRaw = `${extraCharactersToExcludeRaw}${extraCharactersToExclude.join(
+      ""
+    )}`;
+    setExtraCharactersToExcludeRaw(allExtraCharactersToExcludeRaw);
     handleWordlistChange(
-      getRegexValueFromBasicInputValue({ value, locks, mustHaveInputValues: mustHaveInputValue }),
+      getRegexValueFromBasicInputValue({
+        value,
+        locks,
+        mustHaveInputValues: mustHaveInputValue,
+        extraCharactersToExclude: allExtraCharactersToExcludeRaw.split(""),
+      }),
       mustHaveInputValue
     );
   };
@@ -68,6 +96,7 @@ function App() {
         value: basicInputValues,
         locks: locksValue,
         mustHaveInputValues: e.target.value,
+        extraCharactersToExclude: extraCharactersToExcludeRaw.split(""),
       }),
       e.target.value
     );
@@ -102,6 +131,7 @@ function App() {
         value: newBasicInputValues,
         locks: locksValue,
         mustHaveInputValues: mustHaveInputValue,
+        extraCharactersToExclude: extraCharactersToExcludeRaw.split(""),
       }),
       mustHaveInputValue
     );
@@ -110,6 +140,19 @@ function App() {
   function handleQuickAddWord() {
     handleWordClick(quickAddWordRef.current.value);
     quickAddWordRef.current.value = "";
+  }
+
+  function handleChangeExtraCharactersToExclude(newValue) {
+    setExtraCharactersToExcludeRaw(newValue);
+    handleWordlistChange(
+      getRegexValueFromBasicInputValue({
+        value: basicInputValues,
+        locks: locksValue,
+        mustHaveInputValues: mustHaveInputValue,
+        extraCharactersToExclude: newValue.split(""),
+      }),
+      mustHaveInputValue
+    );
   }
 
   return (
@@ -125,6 +168,7 @@ function App() {
               value: basicInputValues,
               locks: locksValue,
               mustHaveInputValues: mustHaveInputValue,
+              extraCharactersToExclude: extraCharactersToExcludeRaw.split(""),
             })}
           </code>
         </div>
@@ -149,6 +193,21 @@ function App() {
           >
             +
           </button>
+        </div>
+        <div className="pl-4 pr-4">
+          <input
+            data-testid="extraCharactersToExclude"
+            type="text"
+            onChange={(e) => handleChangeExtraCharactersToExclude(e.target.value)}
+            value={extraCharactersToExcludeRaw}
+            placeholder="Dropped characters after locking will show up here - remove or add"
+            className="block
+            w-full
+            rounded-md
+            bg-gray-100 dark:bg-gray-600 dark:text-white
+            border-transparent
+            focus:border-gray-500 focus:bg-white dark:focus:bg-gray-700 focus:ring-0"
+          />
         </div>
         <div className="pl-4 pr-4">
           <MustHaveInput value={mustHaveInputValue} onChange={handleMustHaveInputValueChange} />

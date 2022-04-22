@@ -143,3 +143,27 @@ it("should exclude properly after adding consecutive words (crane => breds => dr
 
   expect(await queryTextButton("drier")).toBeInTheDocument();
 });
+
+it("should add to the extra characters to exclude (crane => glide)", async () => {
+  render(<App />);
+  const quickAddWordInput = screen.queryByTestId("quickAddWordInput");
+  const quickAddWordButton = screen.queryByTestId("quickAddWordButton");
+  await userEvent.type(quickAddWordInput, "crane");
+  await userEvent.click(quickAddWordButton);
+  await userEvent.type(screen.getByTestId("MustHaveInput"), `e`);
+
+  // lock the e
+  await userEvent.click(screen.getByTestId("basic-letter-input-4-lock"));
+
+  await userEvent.type(quickAddWordInput, "glide");
+  await userEvent.click(quickAddWordButton);
+
+  // lock the d
+  await userEvent.click(screen.getByTestId("basic-letter-input-3-lock"));
+  // lock the i
+  await userEvent.click(screen.getByTestId("basic-letter-input-2-lock"));
+
+  // abide should no longer be in the document, but if it is then
+  // we are dismissing characters we drop after we lock
+  expect(await queryTextButton("abide")).not.toBeInTheDocument();
+});
