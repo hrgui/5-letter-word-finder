@@ -124,3 +124,22 @@ it("should fill in basic input when quick add word is clicked", async () => {
   expect(fourthBasicInput.value).toEqual("n");
   expect(fifthBasicInput.value).toEqual("e");
 });
+
+it("should exclude properly after adding consecutive words (crane => breds => drier)", async () => {
+  render(<App />);
+  const quickAddWordInput = screen.queryByTestId("quickAddWordInput");
+  const quickAddWordButton = screen.queryByTestId("quickAddWordButton");
+  await userEvent.type(quickAddWordInput, "crane");
+  await userEvent.click(quickAddWordButton);
+  await userEvent.type(screen.getByTestId("MustHaveInput"), `e`);
+
+  // lock the r
+  await userEvent.click(screen.getByTestId("basic-letter-input-1-lock"));
+
+  await userEvent.type(quickAddWordInput, "breds");
+  await userEvent.click(quickAddWordButton);
+
+  await userEvent.type(screen.getByTestId("MustHaveInput"), `d`);
+
+  expect(await queryTextButton("drier")).toBeInTheDocument();
+});

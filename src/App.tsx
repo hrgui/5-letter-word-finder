@@ -3,6 +3,7 @@ import MustHaveInput from "./components/MustHaveInput";
 import WordList from "./components/WordList";
 import data from "./data.json";
 import BasicInput from "./components/BasicInput";
+import { flatten } from "lodash";
 
 function App() {
   const quickAddWordRef = React.useRef(null);
@@ -12,8 +13,13 @@ function App() {
   const [mustHaveInputValue, setMustHaveInputValue] = React.useState("");
 
   function getOtherCharactersToExclude(valueAtPosition, allValues, locks, mustHaveInputValues) {
-    const allOtherExcludeCharacters = allValues
-      .filter((value, i) => !locks[i] && valueAtPosition !== value)
+    //FIXME refactor probably can reduce to only do it once rather than per each call
+    const lockedValuesToExclude = allValues.filter((value, i) => locks[i]);
+
+    // FIXME refactor flatten most likely can be memoed
+    const allOtherExcludeCharacters = flatten(allValues.map((v) => v.split("")))
+      .filter((value, i) => valueAtPosition !== value)
+      .filter((value) => !lockedValuesToExclude.includes(value))
       .filter((value) => !mustHaveInputValues.includes(value))
       .join("");
     return `${allOtherExcludeCharacters}`;
