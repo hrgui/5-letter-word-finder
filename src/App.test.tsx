@@ -105,11 +105,11 @@ it("should fill in the basic input once a word is clicked, filtering w/ respect 
   expect(fifthBasicInput.value).toEqual("yht");
 });
 
-it("should fill in basic input when quick add word is clicked", async () => {
+it("should fill in basic input when quick add word is clicked and lowercase normalize", async () => {
   render(<App />);
   const quickAddWordInput = screen.queryByTestId("quickAddWordInput");
   const quickAddWordButton = screen.queryByTestId("quickAddWordButton");
-  await userEvent.type(quickAddWordInput, "crane");
+  await userEvent.type(quickAddWordInput, "Crane");
   await userEvent.click(quickAddWordButton);
 
   const firstBasicInput = screen.getByTestId("basic-letter-input-0") as HTMLInputElement;

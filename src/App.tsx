@@ -138,7 +138,7 @@ function App() {
   }
 
   function handleQuickAddWord() {
-    handleWordClick(quickAddWordRef.current.value);
+    handleWordClick(quickAddWordRef.current.value?.toLowerCase());
     quickAddWordRef.current.value = "";
   }
 
