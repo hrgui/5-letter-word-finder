@@ -66,6 +66,60 @@ describe("case with value", () => {
       ]
     `);
   });
+
+  it("should handle a onChange event (crane => Arane => arane)", async () => {
+    const onChange = vi.fn();
+    render(<BasicInput value={`crane`.split("")} onChange={onChange} />);
+    const cInput = screen.getByDisplayValue("c");
+    await userEvent.clear(cInput);
+    await userEvent.type(cInput, "A");
+    expect(onChange.mock.calls).toMatchInlineSnapshot(`
+      [
+        [
+          {
+            "target": {
+              "extraCharactersToExclude": [],
+              "locks": [
+                false,
+                false,
+                false,
+                false,
+                false,
+              ],
+              "value": [
+                "",
+                "r",
+                "a",
+                "n",
+                "e",
+              ],
+            },
+          },
+        ],
+        [
+          {
+            "target": {
+              "extraCharactersToExclude": [],
+              "locks": [
+                false,
+                false,
+                false,
+                false,
+                false,
+              ],
+              "value": [
+                "a",
+                "r",
+                "a",
+                "n",
+                "e",
+              ],
+            },
+          },
+        ],
+      ]
+    `);
+  });
 });
 
 describe("locking case", () => {

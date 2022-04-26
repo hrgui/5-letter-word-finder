@@ -24,9 +24,9 @@ const BasicInput = ({ value, onChange }: Props) => {
     } as unknown as React.ChangeEvent<HTMLInputElement>);
   }
 
-  function handleChangeInPosition(pos, newValue) {
+  function handleChangeInPosition(pos: number, newValue: string) {
     const parts = [...internalValue];
-    parts[pos] = newValue;
+    parts[pos] = newValue.toLowerCase();
     setInternalValue(parts);
     callOnChange(parts, internalLocks);
   }
