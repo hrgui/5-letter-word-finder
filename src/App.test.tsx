@@ -125,13 +125,13 @@ it("should fill in basic input when quick add word is clicked and lowercase norm
   expect(fifthBasicInput.value).toEqual("e");
 });
 
-it("should exclude properly after adding consecutive words (crane => breds => drier)", async () => {
+it("should exclude properly after adding consecutive words and normalize to lowercase for must have input (crane => breds => drier)", async () => {
   render(<App />);
   const quickAddWordInput = screen.queryByTestId("quickAddWordInput");
   const quickAddWordButton = screen.queryByTestId("quickAddWordButton");
   await userEvent.type(quickAddWordInput, "crane");
   await userEvent.click(quickAddWordButton);
-  await userEvent.type(screen.getByTestId("MustHaveInput"), `e`);
+  await userEvent.type(screen.getByTestId("MustHaveInput"), `E`);
 
   // lock the r
   await userEvent.click(screen.getByTestId("basic-letter-input-1-lock"));

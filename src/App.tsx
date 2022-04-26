@@ -90,15 +90,16 @@ function App() {
   };
 
   const handleMustHaveInputValueChange: React.ChangeEventHandler<HTMLInputElement> = function (e) {
-    setMustHaveInputValue(e.target.value);
+    const newMustHaveInputValue = e.target.value?.toLowerCase();
+    setMustHaveInputValue(newMustHaveInputValue);
     handleWordlistChange(
       getRegexValueFromBasicInputValue({
         value: basicInputValues,
         locks: locksValue,
-        mustHaveInputValues: e.target.value,
+        mustHaveInputValues: newMustHaveInputValue,
         extraCharactersToExclude: extraCharactersToExcludeRaw.split(""),
       }),
-      e.target.value
+      newMustHaveInputValue
     );
   };
 
@@ -198,7 +199,7 @@ function App() {
           <input
             data-testid="extraCharactersToExclude"
             type="text"
-            onChange={(e) => handleChangeExtraCharactersToExclude(e.target.value)}
+            onChange={(e) => handleChangeExtraCharactersToExclude(e.target.value?.toLowerCase())}
             value={extraCharactersToExcludeRaw}
             placeholder="Dropped characters after locking will show up here - remove or add"
             className="block
