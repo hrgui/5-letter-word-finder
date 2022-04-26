@@ -13,7 +13,7 @@ function App() {
   const [mustHaveInputValue, setMustHaveInputValue] = React.useState("");
   const [extraCharactersToExcludeRaw, setExtraCharactersToExcludeRaw] = React.useState("");
 
-  function getOtherCharactersToExclude(
+  function getCharactersToExcludeAtPosition(
     valueAtPosition,
     allValues,
     locks,
@@ -22,13 +22,18 @@ function App() {
   ) {
     //FIXME refactor probably can reduce to only do it once rather than per each call
     const lockedValuesToExclude = allValues.filter((value, i) => locks[i]);
+    const currentValuesAtPosition = valueAtPosition.split("");
+
+    // if the current position contains a must have value and its not locked, do not filter out
+    mustHaveInputValues = mustHaveInputValues.filter(
+      (mustHaveInputCharacter) => !currentValuesAtPosition.includes(mustHaveInputCharacter)
+    );
 
     // FIXME refactor flatten most likely can be memoed
     const allOtherExcludeCharacters = flatten([
       ...allValues.map((v) => v.split("")),
       ...extraCharactersToExclude,
     ])
-      .filter((value, i) => valueAtPosition !== value)
       .filter((value) => !lockedValuesToExclude.includes(value))
       .filter((value) => !mustHaveInputValues.includes(value))
       .join("");
@@ -51,7 +56,7 @@ function App() {
         } else if (locks[i]) {
           actualValue = valueAtPosition.trim()[0];
         } else {
-          actualValue = `[^${valueAtPosition}${getOtherCharactersToExclude(
+          actualValue = `[^${getCharactersToExcludeAtPosition(
             valueAtPosition,
             value,
             locks,
