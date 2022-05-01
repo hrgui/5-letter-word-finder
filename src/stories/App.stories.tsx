@@ -1,5 +1,5 @@
 import React from "react";
-import { within, userEvent, waitFor } from "@storybook/testing-library";
+import { within, userEvent } from "@storybook/testing-library";
 import { Story, Meta } from "@storybook/react";
 import App from "../App";
 const meta: Meta = { title: "App", component: App, parameters: { layout: "fullscreen" } };

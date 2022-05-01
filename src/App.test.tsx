@@ -167,3 +167,23 @@ it("should add to the extra characters to exclude (crane => glide)", async () =>
   // we are dismissing characters we drop after we lock
   expect(await queryTextButton("abide")).not.toBeInTheDocument();
 });
+
+it("aahed => lock a", async () => {
+  render(<App />);
+  const aahed = queryTextButton("aahed");
+  await userEvent.click(aahed);
+
+  await userEvent.click(screen.getByTestId("basic-letter-input-0-lock"));
+
+  const firstBasicInput = screen.getByTestId("basic-letter-input-0") as HTMLInputElement;
+  const secondBasicInput = screen.getByTestId("basic-letter-input-1") as HTMLInputElement;
+  const thirdBasicInput = screen.getByTestId("basic-letter-input-2") as HTMLInputElement;
+  const fourthBasicInput = screen.getByTestId("basic-letter-input-3") as HTMLInputElement;
+  const fifthBasicInput = screen.getByTestId("basic-letter-input-4") as HTMLInputElement;
+
+  expect(firstBasicInput.value).toEqual("a"); // this doesn't work in storybook
+  expect(secondBasicInput.value).toEqual("a");
+  expect(thirdBasicInput.value).toEqual("h");
+  expect(fourthBasicInput.value).toEqual("e");
+  expect(fifthBasicInput.value).toEqual("d");
+});
