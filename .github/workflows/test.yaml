@@ -23,5 +23,10 @@ jobs:
       - name: 📥 Download deps
         uses: bahmutov/npm-install@v1
 
-      - name: Test
-        run: yarn test
+      - name: 🧪 Test
+        run: |
+          yarn test --silent --coverage
+          echo "### Test Results 🧪 "  >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`"  >> $GITHUB_STEP_SUMMARY
+          yarn c8 report >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`"  >> $GITHUB_STEP_SUMMARY
